@@ -1,0 +1,29 @@
+# Environment variables
+.env
+*.env
+env-template.txt
+
+# Logs
+*.log
+ticket-bot.log
+npm-debug.log*
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Discord bot token - NEVER commit this!
+config.json
+secrets.json
+
+# Render
+.renderignore

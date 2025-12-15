@@ -1,0 +1,32 @@
+{
+  "name": "discord-server-setup",
+  "version": "1.0.0",
+  "description": "Automated Discord server channel setup script",
+  "main": "setup-channels.js",
+  "scripts": {
+    "setup": "node setup-channels.js",
+    "setup-roles": "node setup-roles.js",
+    "setup-kingdoms-roles": "node setup-kingdoms-roles.js",
+    "setup-kingdoms-roles-v2": "node setup-kingdoms-roles-v2.js",
+    "setup-all": "node setup-channels.js && node setup-roles.js",
+    "cleanup": "node cleanup-channels.js",
+    "start": "node activate-ticket-buttons.js",
+    "bot": "node activate-ticket-buttons.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "setup",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

@@ -1,0 +1,14 @@
+services:
+  - type: worker
+    name: kingdoms-discord-bot
+    env: node
+    buildCommand: npm install
+    startCommand: node activate-ticket-buttons.js
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: GUILD_ID
+        sync: false
+    healthCheckPath: /
+    numInstances: 1
+
