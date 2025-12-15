@@ -5,6 +5,12 @@
  * Handles button clicks and creates tickets
  */
 
+// Polyfill ReadableStream for Node.js 16
+if (typeof globalThis.ReadableStream === 'undefined') {
+    const { ReadableStream } = require('web-streams-polyfill/ponyfill');
+    globalThis.ReadableStream = ReadableStream;
+}
+
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
 require('dotenv').config();
 
