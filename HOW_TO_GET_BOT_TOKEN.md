@@ -102,8 +102,8 @@ GUILD_ID=paste_your_server_id_here
 
 **Example:**
 ```env
-DISCORD_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OTA.ABCDEF.ghijklmnopqrstuvwxyz1234567890
-GUILD_ID=987654321098765432
+DISCORD_TOKEN=your_bot_token_from_discord_developer_portal
+GUILD_ID=your_server_id_from_discord
 ```
 
 4. **Save the file**
@@ -179,7 +179,7 @@ Discord Developer Portal
 ### "Invalid token" error
 - ✅ Check that you copied the entire token (it's long!)
 - ✅ Make sure there are no extra spaces
-- ✅ Verify the token starts with something like `MTIz...` or `ODk...`
+- ✅ Verify the token is a long string (usually 59+ characters)
 
 ### "Missing Access" error
 - ✅ Make sure you invited the bot to your server
