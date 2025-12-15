@@ -25,5 +25,10 @@ Thumbs.db
 config.json
 secrets.json
 
+# Deployment scripts with tokens (if any)
+deploy-railway.js
+deploy-render-api.js
+auto-deploy-render.js
+
 # Render
 .renderignore
