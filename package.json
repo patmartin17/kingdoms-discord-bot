@@ -10,8 +10,8 @@
     "setup-kingdoms-roles-v2": "node setup-kingdoms-roles-v2.js",
     "setup-all": "node setup-channels.js && node setup-roles.js",
     "cleanup": "node cleanup-channels.js",
-    "start": "node activate-ticket-buttons.js",
-    "bot": "node activate-ticket-buttons.js"
+    "start": "node -r ./polyfill-loader.js activate-ticket-buttons.js",
+    "bot": "node -r ./polyfill-loader.js activate-ticket-buttons.js"
   },
   "keywords": [
     "discord",

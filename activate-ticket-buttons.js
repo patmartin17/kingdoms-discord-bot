@@ -5,8 +5,8 @@
  * Handles button clicks and creates tickets
  */
 
-// CRITICAL: Load polyfill FIRST before ANY discord.js imports
-require('./polyfill-loader');
+// Polyfill is loaded via -r flag in package.json start script
+// This ensures it loads before ANY other modules
 
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
 require('dotenv').config();
