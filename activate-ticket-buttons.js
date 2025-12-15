@@ -5,11 +5,8 @@
  * Handles button clicks and creates tickets
  */
 
-// Polyfill ReadableStream for Node.js 16
-if (typeof globalThis.ReadableStream === 'undefined') {
-    const { ReadableStream } = require('web-streams-polyfill/ponyfill');
-    globalThis.ReadableStream = ReadableStream;
-}
+// CRITICAL: Load polyfill FIRST before ANY discord.js imports
+require('./polyfill-loader');
 
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
 require('dotenv').config();
