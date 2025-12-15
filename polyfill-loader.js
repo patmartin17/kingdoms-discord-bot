@@ -1,26 +1,30 @@
-// Load polyfill BEFORE anything else - MUST be first
-if (typeof globalThis.ReadableStream === 'undefined') {
-    try {
-        const { ReadableStream, WritableStream, TransformStream } = require('web-streams-polyfill/ponyfill');
-        // Set on multiple globals to ensure compatibility
-        globalThis.ReadableStream = ReadableStream;
-        globalThis.WritableStream = WritableStream;
-        globalThis.TransformStream = TransformStream;
-        global.ReadableStream = ReadableStream;
-        global.WritableStream = WritableStream;
-        global.TransformStream = TransformStream;
-        // Also set on window if it exists (for browser-like environments)
-        if (typeof window !== 'undefined') {
-            window.ReadableStream = ReadableStream;
-            window.WritableStream = WritableStream;
-            window.TransformStream = TransformStream;
+// CRITICAL: Load polyfill BEFORE anything else - MUST be absolute first thing
+// This patches ReadableStream before undici or any other module loads it
+
+const { ReadableStream, WritableStream, TransformStream } = require('web-streams-polyfill/ponyfill');
+
+// Set on ALL possible global objects
+globalThis.ReadableStream = ReadableStream;
+globalThis.WritableStream = WritableStream;
+globalThis.TransformStream = TransformStream;
+global.ReadableStream = ReadableStream;
+global.WritableStream = WritableStream;
+global.TransformStream = TransformStream;
+
+// Patch module cache to inject ReadableStream into undici if it tries to load
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function(id) {
+    const result = originalRequire.apply(this, arguments);
+    // If undici is being loaded, ensure ReadableStream is available
+    if (id.includes('undici') || id.includes('fetch')) {
+        if (typeof globalThis.ReadableStream === 'undefined') {
+            globalThis.ReadableStream = ReadableStream;
+            global.ReadableStream = ReadableStream;
         }
-        console.log('✅ ReadableStream polyfill loaded successfully');
-    } catch (e) {
-        console.error('❌ Failed to load polyfill:', e.message);
-        process.exit(1);
     }
-} else {
-    console.log('✅ ReadableStream already available');
-}
+    return result;
+};
+
+console.log('✅ ReadableStream polyfill loaded and patched');
 
