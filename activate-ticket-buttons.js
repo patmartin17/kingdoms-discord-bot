@@ -5,8 +5,19 @@
  * Handles button clicks and creates tickets
  */
 
-// Polyfill is loaded via -r flag in package.json start script
-// This ensures it loads before ANY other modules
+// ============================================
+// CRITICAL: POLYFILL MUST BE FIRST - DO NOT MOVE
+// ============================================
+// This MUST run before require('discord.js')
+const { ReadableStream, WritableStream, TransformStream } = require('web-streams-polyfill/ponyfill');
+globalThis.ReadableStream = ReadableStream;
+globalThis.WritableStream = WritableStream;
+globalThis.TransformStream = TransformStream;
+global.ReadableStream = ReadableStream;
+global.WritableStream = WritableStream;
+global.TransformStream = TransformStream;
+console.log('✅ Polyfill loaded');
+// ============================================
 
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
 require('dotenv').config();
