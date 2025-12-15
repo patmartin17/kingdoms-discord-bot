@@ -5,7 +5,7 @@
  * Handles button clicks and creates tickets
  */
 
-const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, PermissionFlagsBits } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
 require('dotenv').config();
 
 const GUILD_ID = process.env.GUILD_ID;
@@ -18,7 +18,8 @@ if (!GUILD_ID || !DISCORD_TOKEN) {
 
 const client = new Client({
     intents: [
-        GatewayIntentBits.Guilds
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES
     ]
 });
 
@@ -78,31 +79,30 @@ client.on('interactionCreate', async interaction => {
         );
 
         // Create ticket channel
-        const ticketChannel = await guild.channels.create({
-            name: `ticket-${user.username.toLowerCase().slice(0, 10)}-${Date.now().toString().slice(-4)}`,
-            type: ChannelType.GuildText,
+        const ticketChannel = await guild.channels.create(`ticket-${user.username.toLowerCase().slice(0, 10)}-${Date.now().toString().slice(-4)}`, {
+            type: 'GUILD_TEXT',
             parent: supportCategory?.id,
             permissionOverwrites: [
                 {
                     id: guild.roles.everyone.id,
-                    deny: [PermissionFlagsBits.ViewChannel]
+                    deny: [Permissions.FLAGS.VIEW_CHANNEL]
                 },
                 {
                     id: user.id,
                     allow: [
-                        PermissionFlagsBits.ViewChannel,
-                        PermissionFlagsBits.SendMessages,
-                        PermissionFlagsBits.ReadMessageHistory,
-                        PermissionFlagsBits.AttachFiles
+                        Permissions.FLAGS.VIEW_CHANNEL,
+                        Permissions.FLAGS.SEND_MESSAGES,
+                        Permissions.FLAGS.READ_MESSAGE_HISTORY,
+                        Permissions.FLAGS.ATTACH_FILES
                     ]
                 },
                 {
                     id: client.user.id,
                     allow: [
-                        PermissionFlagsBits.ViewChannel,
-                        PermissionFlagsBits.SendMessages,
-                        PermissionFlagsBits.ReadMessageHistory,
-                        PermissionFlagsBits.ManageMessages
+                        Permissions.FLAGS.VIEW_CHANNEL,
+                        Permissions.FLAGS.SEND_MESSAGES,
+                        Permissions.FLAGS.READ_MESSAGE_HISTORY,
+                        Permissions.FLAGS.MANAGE_MESSAGES
                     ]
                 }
             ]
@@ -140,7 +140,7 @@ client.on('interactionCreate', async interaction => {
         });
 
         // Send welcome message
-        const welcomeEmbed = new EmbedBuilder()
+        const welcomeEmbed = new MessageEmbed()
             .setTitle(`${categoryInfo.emoji} ${categoryInfo.name}`)
             .setDescription(
                 `Hello ${user}, welcome to your support ticket!\n\n` +
@@ -151,16 +151,16 @@ client.on('interactionCreate', async interaction => {
                 `Click the button below to close this ticket when resolved.`
             )
             .setColor(categoryInfo.color)
-            .setFooter({ text: `Ticket ID: ${ticketChannel.id.slice(-6)}` })
+            .setFooter(`Ticket ID: ${ticketChannel.id.slice(-6)}`)
             .setTimestamp();
 
-        const closeButton = new ActionRowBuilder()
+        const closeButton = new MessageActionRow()
             .addComponents(
-                new ButtonBuilder()
+                new MessageButton()
                     .setCustomId(`close_ticket_${ticketChannel.id}`)
                     .setLabel('Close Ticket')
                     .setEmoji('🔒')
-                    .setStyle(ButtonStyle.Danger)
+                    .setStyle('DANGER')
             );
 
         const staffMention = `${modRole ? `<@&${modRole.id}>` : ''} ${adminRole ? `<@&${adminRole.id}>` : ''}`.trim();
@@ -217,7 +217,7 @@ client.on('interactionCreate', async interaction => {
         activeTickets.set(channelId, ticket);
 
         // Send closing message
-        const closeEmbed = new EmbedBuilder()
+        const closeEmbed = new MessageEmbed()
             .setTitle('🔒 Ticket Closed')
             .setDescription(`This ticket has been closed by ${interaction.user}`)
             .setColor(0xED4245)
