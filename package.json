@@ -11,7 +11,17 @@
     "setup-all": "node setup-channels.js && node setup-roles.js",
     "cleanup": "node cleanup-channels.js",
     "start": "node activate-ticket-buttons.js",
-    "bot": "node activate-ticket-buttons.js"
+    "bot": "node activate-ticket-buttons.js",
+    "send-rules": "node send-rules-message.js",
+    "send-welcome": "node send-welcome-message.js",
+    "lock-channels": "node lock-channel-permissions.js",
+    "restrict-mods": "node restrict-mod-permissions.js",
+    "create-events": "node create-events-channel.js",
+    "configure-welcome": "node configure-welcome-system.js",
+    "create-faq": "node create-faq-channel.js",
+    "create-giveaway": "node create-giveaway-channel.js",
+    "create-invite": "node create-permanent-invite.js",
+    "disable-verification": "node disable-verification-raid.js"
   },
   "keywords": [
     "discord",
@@ -22,11 +32,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "12.5.3",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   }
 }
 

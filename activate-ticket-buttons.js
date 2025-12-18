@@ -16,12 +16,69 @@ if (!GUILD_ID || !DISCORD_TOKEN) {
     process.exit(1);
 }
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+    ws: {
+        intents: [
+            Discord.Intents.FLAGS.GUILDS,
+            Discord.Intents.FLAGS.GUILD_MEMBERS,
+            Discord.Intents.FLAGS.GUILD_MESSAGES
+        ]
+    }
+});
 
 client.once('ready', () => {
     console.log('✅ Bot is online!');
     console.log(`   Logged in as: ${client.user.tag}`);
     console.log(`   Guilds: ${client.guilds.cache.size}`);
+});
+
+// Auto-assign Citizen role to new members
+client.on('guildMemberAdd', async (member) => {
+    try {
+        console.log(`👤 New member joined: ${member.user.tag}`);
+        
+        // Find Citizen role (try different variations)
+        const citizenRole = member.guild.roles.cache.find(r => 
+            r.name === '⚪ Citizen' || 
+            r.name === '👤 Citizen' ||
+            r.name.toLowerCase().includes('citizen')
+        );
+        
+        if (!citizenRole) {
+            console.error(`❌ Citizen role not found! Available roles:`);
+            member.guild.roles.cache.forEach(role => {
+                if (!role.managed && role.name !== '@everyone') {
+                    console.log(`   - ${role.name}`);
+                }
+            });
+            return;
+        }
+        
+        if (member.roles.cache.has(citizenRole.id)) {
+            console.log(`ℹ️  ${member.user.tag} already has Citizen role`);
+            return;
+        }
+        
+        // Check if bot can manage this role (bot's role must be higher)
+        const botMember = await member.guild.members.fetch(client.user.id);
+        if (botMember.roles.highest.position <= citizenRole.position) {
+            console.error(`❌ Bot's role is not high enough to assign Citizen role!`);
+            console.error(`   Bot role position: ${botMember.roles.highest.position}`);
+            console.error(`   Citizen role position: ${citizenRole.position}`);
+            console.error(`   Move bot's role higher than Citizen in Server Settings → Roles`);
+            return;
+        }
+        
+        await member.roles.add(citizenRole, 'Auto-assign: Citizen role on join');
+        console.log(`✅ Assigned Citizen role to ${member.user.tag}`);
+    } catch (error) {
+        console.error(`❌ Error assigning Citizen role to ${member.user.tag}: ${error.message}`);
+        if (error.code === 50013) {
+            console.error(`   Missing Permissions - Bot needs "Manage Roles" permission`);
+        } else if (error.code === 50035) {
+            console.error(`   Invalid Form Body - Bot's role must be higher than Citizen role`);
+        }
+    }
 });
 
 // Simple message handler (v12 doesn't have buttons, but bot will be online)
